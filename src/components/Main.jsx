@@ -1,13 +1,15 @@
 import React, { useEffect, useState } from 'react'
 import { api } from '../utils/api'
+import Card from './Card'
 
-function Main({ onEditProfile, onAddPlace, onEditAvatar }) {
+function Main({ onEditProfile, onAddPlace, onEditAvatar, onCardClick }) {
   const [userName, setUserName] = useState('')
   const [userDescription, setUserDescription] = useState('')
   const [userAvatar, setUserAvatar] = useState('')
+  const [cards, setCards] = useState([])
 
   useEffect(() => {
-    async function fetchData() {
+    async function fetchUserInfo() {
       try {
         const { name, about, avatar } = await api.getUserInfo()
         setUserName(name)
@@ -17,7 +19,19 @@ function Main({ onEditProfile, onAddPlace, onEditAvatar }) {
         console.log(error)
       }
     }
-    fetchData()
+    fetchUserInfo()
+  }, [])
+
+  useEffect(() => {
+    async function fetchCards() {
+      try {
+        const initialCards = await api.getInitialCards()
+        setCards(initialCards)
+      } catch (error) {
+        console.log(error)
+      }
+    }
+    fetchCards()
   }, [])
 
   return (
@@ -63,7 +77,12 @@ function Main({ onEditProfile, onAddPlace, onEditAvatar }) {
         className='photos'
         aria-label='Коллекция фотографий пользователя'
       >
-        <ul className='photos__inner'></ul>
+        <ul className='photos__inner'>
+          {cards &&
+            cards.map(card => (
+              <Card card={card} key={card._id} onCardClick={onCardClick} />
+            ))}
+        </ul>
       </section>
     </main>
   )

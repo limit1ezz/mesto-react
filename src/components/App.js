@@ -10,6 +10,7 @@ function App() {
   const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] = useState(false)
   const [isAddPlacePopupOpen, setIsAddPlacePopupOpen] = useState(false)
   const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] = useState(false)
+  const [selectedCard, setSelectedCard] = useState({})
 
   function handleEditProfileClick() {
     setIsEditProfilePopupOpen(true)
@@ -27,6 +28,11 @@ function App() {
     setIsEditProfilePopupOpen(false)
     setIsAddPlacePopupOpen(false)
     setIsEditAvatarPopupOpen(false)
+    setSelectedCard({})
+  }
+
+  function handleCardClick(card) {
+    setSelectedCard(card)
   }
 
   return (
@@ -36,6 +42,7 @@ function App() {
         onEditProfile={handleEditProfileClick}
         onAddPlace={handleAddPlaceClick}
         onEditAvatar={handleEditAvatarClick}
+        onCardClick={handleCardClick}
       />
       <Footer />
 
@@ -138,31 +145,7 @@ function App() {
         <span className='form__error-message avatar-link-input-error'></span>
       </PopupWithForm>
 
-      <ImagePopup />
-
-      <template id='photo-card'>
-        <li className='photos__item'>
-          <article className='photo-card'>
-            <button
-              type='button'
-              className='photo-card__delete'
-              aria-label='Поставить лайк'
-            ></button>
-            <img src='#' alt='#' className='photo-card__image' />
-            <div className='photo-card__content'>
-              <h2 className='photo-card__title'></h2>
-              <div className='photo-card__like-box'>
-                <button
-                  type='button'
-                  className='photo-card__like'
-                  aria-label='Поставить лайк'
-                ></button>
-                <span className='photo-card__count'></span>
-              </div>
-            </div>
-          </article>
-        </li>
-      </template>
+      <ImagePopup card={selectedCard} onClose={closeAllPopups} />
     </div>
   )
 }
