@@ -1,6 +1,6 @@
 import React from 'react'
 
-function Main() {
+function Main({ onEditProfile, onAddPlace, onEditAvatar }) {
   return (
     <main className='page-content wrapper__page-content'>
       <section className='profile' aria-label='Информация о пользователе'>
@@ -11,7 +11,12 @@ function Main() {
               src="<%=require('../images/profile-photo.jpg')%>"
               alt='Аватар пользователя'
             />
-            <div className='profile__overlay'></div>
+            <button
+              type='button'
+              className='profile__overlay'
+              aria-label='Изменить фото профиля'
+              onClick={onEditAvatar}
+            ></button>
           </div>
           <div className='profile__info'>
             <div className='profile__content'>
@@ -22,6 +27,7 @@ function Main() {
               type='button'
               className='profile__edit'
               aria-label='Изменить профиль'
+              onClick={onEditProfile}
             ></button>
           </div>
           <button
@@ -29,6 +35,7 @@ function Main() {
             className='profile__add-photo-card'
             aria-label='Добавить карточку с
               изображением'
+            onClick={onAddPlace}
           ></button>
         </div>
       </section>

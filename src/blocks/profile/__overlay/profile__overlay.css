@@ -2,14 +2,16 @@
   position: absolute;
   top: 0;
   left: 0;
+  padding: 0;
   width: 100%;
   height: 100%;
   opacity: 0;
   background: rgb(0 0 0 / 80%);
-  background-image: url("../../../images/edit.svg");
+  background-image: url('../../../images/edit.svg');
   background-repeat: no-repeat;
   background-position: center;
   background-size: 26px 26px;
+  border: none;
   border-radius: 50%;
   transition: opacity 0.1s ease-in-out;
   cursor: pointer;
@@ -18,4 +20,3 @@
 .profile__overlay:hover {
   opacity: 1;
 }
-
