@@ -1,3 +1,6 @@
+import React from 'react'
+
+import Footer from './Footer'
 import Header from './Header'
 import Main from './Main'
 
@@ -7,10 +10,7 @@ function App() {
       <div className='wrapper'>
         <Header />
         <Main />
-        <footer className='page-footer wrapper__page-footer'>
-          <p className='page-footer__copyright'>&copy; 2022. Cyrill Galkin</p>
-        </footer>
-
+        <Footer />
         <div className='popup popup_type_edit-profile'>
           <div className='popup__container'>
             <button
