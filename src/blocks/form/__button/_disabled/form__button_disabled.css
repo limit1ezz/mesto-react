@@ -1,0 +1,7 @@
+.form__button_disabled {
+  pointer-events: none;
+  color: rgb(196 196 196);
+  background-color: transparent;
+  border-color: rgb(0 0 0 / 20%);
+  cursor: default;
+}
