@@ -1,15 +1,10 @@
-import headerLogo from '../images/header-logo.svg'
+import Header from './Header'
 
 function App() {
   return (
     <>
       <div className='wrapper'>
-        <header className='page-header wrapper__page-header'>
-          <a className='page-header__logo logo' href='/'>
-            <img className='logo__image' src={headerLogo} alt='Логотип сайта' />
-          </a>
-        </header>
-
+        <Header />
         <main className='page-content wrapper__page-content'>
           <section className='profile' aria-label='Информация о пользователе'>
             <div className='profile__inner'>
