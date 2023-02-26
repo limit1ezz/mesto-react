@@ -1,24 +1,17 @@
-import React, { useContext, useEffect, useState } from 'react'
-import { api } from '../utils/api'
+import React, { useContext } from 'react'
 import Card from './Card'
 import { CurrentUserContext } from './contexts/CurrentUserContext'
 
-function Main({ onEditProfile, onAddPlace, onEditAvatar, onCardClick }) {
-  const [cards, setCards] = useState([])
-
+function Main({
+  onEditProfile,
+  onAddPlace,
+  onEditAvatar,
+  onCardClick,
+  onCardLike,
+  onCardDelete,
+  cards
+}) {
   const currentUser = useContext(CurrentUserContext)
-
-  useEffect(() => {
-    async function fetchCards() {
-      try {
-        const initialCards = await api.getInitialCards()
-        setCards(initialCards)
-      } catch (error) {
-        console.log(error)
-      }
-    }
-    fetchCards()
-  }, [])
 
   return (
     <main className='page-content wrapper__page-content'>
@@ -66,7 +59,13 @@ function Main({ onEditProfile, onAddPlace, onEditAvatar, onCardClick }) {
         <ul className='photos__inner'>
           {cards &&
             cards.map(card => (
-              <Card card={card} key={card._id} onCardClick={onCardClick} />
+              <Card
+                card={card}
+                key={card._id}
+                onCardClick={onCardClick}
+                onCardLike={onCardLike}
+                onCardDelete={onCardDelete}
+              />
             ))}
         </ul>
       </section>

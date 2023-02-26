@@ -14,6 +14,7 @@ function App() {
   const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] = useState(false)
   const [selectedCard, setSelectedCard] = useState({})
   const [currentUser, setCurrentUser] = useState()
+  const [cards, setCards] = useState([])
 
   useEffect(() => {
     async function fetchUserInfo() {
@@ -25,6 +26,18 @@ function App() {
       }
     }
     fetchUserInfo()
+  }, [])
+
+  useEffect(() => {
+    async function fetchCards() {
+      try {
+        const initialCards = await api.getInitialCards()
+        setCards(initialCards)
+      } catch (error) {
+        console.log(error)
+      }
+    }
+    fetchCards()
   }, [])
 
   function handleEditProfileClick() {
@@ -50,6 +63,21 @@ function App() {
     setSelectedCard(card)
   }
 
+  function handleCardLike(card) {
+    console.log(card)
+    const isLiked = card.likes.some(user => user._id === currentUser._id)
+
+    api.changeLikeCardStatus(card._id, !isLiked).then(newCard => {
+      setCards(state => state.map(c => (c._id === card._id ? newCard : c)))
+    })
+  }
+
+  function handleCardDelete(card) {
+    api.deleteCard(card._id).then(message => {
+      setCards(state => state.filter(c => c._id !== card._id))
+    })
+  }
+
   return (
     <CurrentUserContext.Provider value={currentUser}>
       <div className='wrapper'>
@@ -59,6 +87,9 @@ function App() {
           onAddPlace={handleAddPlaceClick}
           onEditAvatar={handleEditAvatarClick}
           onCardClick={handleCardClick}
+          onCardLike={handleCardLike}
+          onCardDelete={handleCardDelete}
+          cards={cards}
         />
         <Footer />
 

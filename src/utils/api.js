@@ -60,6 +60,10 @@ class Api {
     }).then(res => this.handleServerResponse(res))
   }
 
+  changeLikeCardStatus(cardId, status) {
+    return status ? this.addLike(cardId) : this.deleteLike(cardId)
+  }
+
   updateAvatar(avatar) {
     return fetch(`${this._baseUrl}/users/me/avatar`, {
       method: 'PATCH',
