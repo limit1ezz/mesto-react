@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react'
 import { api } from '../utils/api'
+import AddPlacePopup from './AddPlacePopup'
 import { CurrentUserContext } from './contexts/CurrentUserContext'
 import EditAvatarPopup from './EditAvatarPopup'
 import EditProfilePopup from './EditProfilePopup'
-
 import Footer from './Footer'
 import Header from './Header'
 import ImagePopup from './ImagePopup'
@@ -93,6 +93,13 @@ function App() {
     })
   }
 
+  function handleAddPlace(placeInfo) {
+    api.addNewCard(placeInfo).then(newCard => {
+      setCards([newCard, ...cards])
+      closeAllPopups()
+    })
+  }
+
   return (
     <CurrentUserContext.Provider value={currentUser}>
       <div className='wrapper'>
@@ -120,40 +127,11 @@ function App() {
           onUpdateAvatar={handleUpdateAvatar}
         />
 
-        <PopupWithForm
-          title={'Новое место'}
-          name={'add-photo-card'}
-          buttonText={'Создать'}
+        <AddPlacePopup
           isOpen={isAddPlacePopupOpen}
           onClose={closeAllPopups}
-        >
-          <label className='form__label' aria-label='Название места'>
-            <input
-              type='text'
-              className='form__input form__input_type_place-name'
-              id='place-name-input'
-              name='placeName'
-              autoComplete='off'
-              placeholder='Название'
-              minLength='2'
-              maxLength='30'
-              required
-            />
-          </label>
-          <span className='form__error-message place-name-input-error'></span>
-          <label className='form__label' aria-label='Ссылка на картинку'>
-            <input
-              type='url'
-              className='form__input form__input_type_image-link'
-              id='image-link-input'
-              name='imageLink'
-              autoComplete='off'
-              placeholder='Ссылка на картинку'
-              required
-            />
-          </label>
-          <span className='form__error-message image-link-input-error'></span>
-        </PopupWithForm>
+          onAddPlace={handleAddPlace}
+        />
 
         <PopupWithForm
           title={'Вы уверены?'}
