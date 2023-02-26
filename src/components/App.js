@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { api } from '../utils/api'
 import { CurrentUserContext } from './contexts/CurrentUserContext'
+import EditAvatarPopup from './EditAvatarPopup'
 import EditProfilePopup from './EditProfilePopup'
 
 import Footer from './Footer'
@@ -85,6 +86,13 @@ function App() {
     })
   }
 
+  function handleUpdateAvatar(avatar) {
+    api.updateAvatar(avatar).then(user => {
+      setCurrentUser(user)
+      closeAllPopups()
+    })
+  }
+
   return (
     <CurrentUserContext.Provider value={currentUser}>
       <div className='wrapper'>
@@ -104,6 +112,12 @@ function App() {
           isOpen={isEditProfilePopupOpen}
           onClose={closeAllPopups}
           onUpdateUser={handleUpdateUser}
+        />
+
+        <EditAvatarPopup
+          isOpen={isEditAvatarPopupOpen}
+          onClose={closeAllPopups}
+          onUpdateAvatar={handleUpdateAvatar}
         />
 
         <PopupWithForm
@@ -146,27 +160,6 @@ function App() {
           name={'delete-confirmation'}
           buttonText={'Да'}
         ></PopupWithForm>
-
-        <PopupWithForm
-          title={'Обновить аватар'}
-          name={'update-avatar'}
-          buttonText={'Сохранить'}
-          isOpen={isEditAvatarPopupOpen}
-          onClose={closeAllPopups}
-        >
-          <label className='form__label' aria-label='Ссылка на картинку'>
-            <input
-              type='url'
-              className='form__input form__input_type_avatar-link'
-              id='avatar-link-input'
-              name='avatarLink'
-              autoComplete='off'
-              placeholder='Ссылка на картинку'
-              required
-            />
-          </label>
-          <span className='form__error-message avatar-link-input-error'></span>
-        </PopupWithForm>
 
         <ImagePopup card={selectedCard} onClose={closeAllPopups} />
       </div>
