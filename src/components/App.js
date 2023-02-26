@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { api } from '../utils/api'
 import { CurrentUserContext } from './contexts/CurrentUserContext'
+import EditProfilePopup from './EditProfilePopup'
 
 import Footer from './Footer'
 import Header from './Header'
@@ -64,7 +65,6 @@ function App() {
   }
 
   function handleCardLike(card) {
-    console.log(card)
     const isLiked = card.likes.some(user => user._id === currentUser._id)
 
     api.changeLikeCardStatus(card._id, !isLiked).then(newCard => {
@@ -75,6 +75,13 @@ function App() {
   function handleCardDelete(card) {
     api.deleteCard(card._id).then(message => {
       setCards(state => state.filter(c => c._id !== card._id))
+    })
+  }
+
+  function handleUpdateUser(info) {
+    api.updateUserInfo(info).then(user => {
+      setCurrentUser(user)
+      closeAllPopups()
     })
   }
 
@@ -93,42 +100,11 @@ function App() {
         />
         <Footer />
 
-        <PopupWithForm
-          title={'Редактировать профиль'}
-          name={'edit-profile'}
-          buttonText={'Сохранить'}
+        <EditProfilePopup
           isOpen={isEditProfilePopupOpen}
           onClose={closeAllPopups}
-        >
-          <label className='form__label' aria-label='Имя пользователя'>
-            <input
-              type='text'
-              className='form__input form__input_type_user-name'
-              id='user-name-input'
-              name='userName'
-              autoComplete='off'
-              placeholder='Имя'
-              minLength='2'
-              maxLength='40'
-              required
-            />
-          </label>
-          <span className='form__error-message user-name-input-error'></span>
-          <label className='form__label' aria-label='Описание деятельности'>
-            <input
-              type='text'
-              className='form__input form__input_type_job-description'
-              id='job-description-input'
-              name='jobDescription'
-              autoComplete='off'
-              placeholder='Описание деятельности'
-              minLength='2'
-              maxLength='200'
-              required
-            />
-          </label>
-          <span className='form__error-message job-description-input-error'></span>
-        </PopupWithForm>
+          onUpdateUser={handleUpdateUser}
+        />
 
         <PopupWithForm
           title={'Новое место'}
