@@ -1,22 +1,24 @@
 import React, { useEffect, useState } from 'react'
+import { CurrentUserContext } from '../contexts/CurrentUserContext'
 import { api } from '../utils/api'
 import AddPlacePopup from './AddPlacePopup'
-import { CurrentUserContext } from './contexts/CurrentUserContext'
+import ConfirmationPopup from './ConfirmationPopup'
 import EditAvatarPopup from './EditAvatarPopup'
 import EditProfilePopup from './EditProfilePopup'
 import Footer from './Footer'
 import Header from './Header'
 import ImagePopup from './ImagePopup'
 import Main from './Main'
-import PopupWithForm from './PopupWithForm'
 
 function App() {
   const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] = useState(false)
   const [isAddPlacePopupOpen, setIsAddPlacePopupOpen] = useState(false)
   const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] = useState(false)
+  const [isConfirmationPopupOpen, setIsConfirmationPopupOpen] = useState(false)
   const [selectedCard, setSelectedCard] = useState({})
-  const [currentUser, setCurrentUser] = useState()
+  const [currentUser, setCurrentUser] = useState({})
   const [cards, setCards] = useState([])
+  const [deletedCard, setDeletedCard] = useState({})
 
   useEffect(() => {
     async function fetchUserInfo() {
@@ -54,10 +56,16 @@ function App() {
     setIsEditAvatarPopupOpen(true)
   }
 
+  function handleTrashButtonClick(card) {
+    setIsConfirmationPopupOpen(true)
+    setDeletedCard(card)
+  }
+
   function closeAllPopups() {
     setIsEditProfilePopupOpen(false)
     setIsAddPlacePopupOpen(false)
     setIsEditAvatarPopupOpen(false)
+    setIsConfirmationPopupOpen(false)
     setSelectedCard({})
   }
 
@@ -68,36 +76,62 @@ function App() {
   function handleCardLike(card) {
     const isLiked = card.likes.some(user => user._id === currentUser._id)
 
-    api.changeLikeCardStatus(card._id, !isLiked).then(newCard => {
-      setCards(state => state.map(c => (c._id === card._id ? newCard : c)))
-    })
+    api
+      .changeLikeCardStatus(card._id, !isLiked)
+      .then(newCard => {
+        setCards(state => state.map(c => (c._id === card._id ? newCard : c)))
+      })
+      .catch(err => {
+        console.log(err)
+      })
   }
 
   function handleCardDelete(card) {
-    api.deleteCard(card._id).then(message => {
-      setCards(state => state.filter(c => c._id !== card._id))
-    })
+    api
+      .deleteCard(card._id)
+      .then(() => {
+        setCards(state => state.filter(c => c._id !== card._id))
+        closeAllPopups()
+      })
+      .catch(err => {
+        console.log(err)
+      })
   }
 
   function handleUpdateUser(info) {
-    api.updateUserInfo(info).then(user => {
-      setCurrentUser(user)
-      closeAllPopups()
-    })
+    api
+      .updateUserInfo(info)
+      .then(user => {
+        setCurrentUser(user)
+        closeAllPopups()
+      })
+      .catch(err => {
+        console.log(err)
+      })
   }
 
   function handleUpdateAvatar(avatar) {
-    api.updateAvatar(avatar).then(user => {
-      setCurrentUser(user)
-      closeAllPopups()
-    })
+    api
+      .updateAvatar(avatar)
+      .then(user => {
+        setCurrentUser(user)
+        closeAllPopups()
+      })
+      .catch(err => {
+        console.log(err)
+      })
   }
 
   function handleAddPlace(placeInfo) {
-    api.addNewCard(placeInfo).then(newCard => {
-      setCards([newCard, ...cards])
-      closeAllPopups()
-    })
+    api
+      .addNewCard(placeInfo)
+      .then(newCard => {
+        setCards([newCard, ...cards])
+        closeAllPopups()
+      })
+      .catch(err => {
+        console.log(err)
+      })
   }
 
   return (
@@ -110,7 +144,7 @@ function App() {
           onEditAvatar={handleEditAvatarClick}
           onCardClick={handleCardClick}
           onCardLike={handleCardLike}
-          onCardDelete={handleCardDelete}
+          onTrashClick={handleTrashButtonClick}
           cards={cards}
         />
         <Footer />
@@ -133,11 +167,12 @@ function App() {
           onAddPlace={handleAddPlace}
         />
 
-        <PopupWithForm
-          title={'Вы уверены?'}
-          name={'delete-confirmation'}
-          buttonText={'Да'}
-        ></PopupWithForm>
+        <ConfirmationPopup
+          isOpen={isConfirmationPopupOpen}
+          onClose={closeAllPopups}
+          onCardDelete={handleCardDelete}
+          deletedCard={deletedCard}
+        />
 
         <ImagePopup card={selectedCard} onClose={closeAllPopups} />
       </div>
