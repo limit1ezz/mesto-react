@@ -1,6 +1,6 @@
 import React, { useContext } from 'react'
+import { CurrentUserContext } from '../contexts/CurrentUserContext'
 import Card from './Card'
-import { CurrentUserContext } from './contexts/CurrentUserContext'
 
 function Main({
   onEditProfile,
@@ -8,7 +8,7 @@ function Main({
   onEditAvatar,
   onCardClick,
   onCardLike,
-  onCardDelete,
+  onTrashClick,
   cards
 }) {
   const currentUser = useContext(CurrentUserContext)
@@ -28,7 +28,7 @@ function Main({
               className='profile__overlay'
               aria-label='Изменить фото профиля'
               onClick={onEditAvatar}
-            ></button>
+            />
           </div>
           <div className='profile__info'>
             <div className='profile__content'>
@@ -40,7 +40,7 @@ function Main({
               className='profile__edit'
               aria-label='Изменить профиль'
               onClick={onEditProfile}
-            ></button>
+            />
           </div>
           <button
             type='button'
@@ -48,7 +48,7 @@ function Main({
             aria-label='Добавить карточку с
               изображением'
             onClick={onAddPlace}
-          ></button>
+          />
         </div>
       </section>
 
@@ -59,13 +59,14 @@ function Main({
         <ul className='photos__inner'>
           {cards &&
             cards.map(card => (
-              <Card
-                card={card}
-                key={card._id}
-                onCardClick={onCardClick}
-                onCardLike={onCardLike}
-                onCardDelete={onCardDelete}
-              />
+              <li className='photos__item' key={card._id}>
+                <Card
+                  card={card}
+                  onCardClick={onCardClick}
+                  onCardLike={onCardLike}
+                  onTrashClick={onTrashClick}
+                />
+              </li>
             ))}
         </ul>
       </section>
